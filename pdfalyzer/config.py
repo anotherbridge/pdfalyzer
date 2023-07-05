@@ -45,5 +45,5 @@ class PdfalyzerConfig:
 
         return path.join(
             cls._args.output_dir,
-            output_basename + cls._args.file_suffix + f"___pdfalyzed_{cls._args.invoked_at_str}"
+            output_basename + cls._args.file_suffix
         )
