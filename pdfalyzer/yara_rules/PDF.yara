@@ -345,11 +345,12 @@ rule invalid_trailer_structure : PDF
 
 	strings:
 		$magic = "%PDF"
-		$reg0 = /trailer\r?\n?.*\/Size.*\r?\n?\.*/
-		$reg1 = /\/Root.*\r?\n?.*startxref\r?\n?.*\r?\n?%%EOF/
+    $reg0 = /trailer\r?\n?\/Size.*\r?\n?\.*/
+		$reg1 = /\/Root.*\r?\n?(.*\r?\n?){,100}startxref\r?\n?.*\r?\n?%%EOF/
+    $reg2 = /\/Type( )?\/XRef\r?\n?(.*\r?\n?){,10}\Size.*\r?\n?\.*/
 
 	condition:
-		$magic in (0..1024) and not ($reg0 or $reg1)
+		$magic in (0..1024) and not ($reg0 or $reg2) and not $reg1 
 }
 import "math"
 
@@ -459,7 +460,7 @@ rule invalid_xref_numbers : PDF
 	strings:
 		$magic = { 25 50 44 46 }
 		$reg0 = /xref\r?\n?.*\r?\n?.*65535\sf/
-		$reg1 = /endstream.*?\r??\n??endobj.*?\r??\n??startxref/
+		$reg1 = /endstream.*?[ \r\n]*?endobj.*?[ \r\n]*?startxref/
 
 	condition:
 		$magic in (0..1024) and not $reg0 and not $reg1
